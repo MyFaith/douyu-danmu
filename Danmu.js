@@ -1,9 +1,5 @@
-'use strict';
-
-const p = require('util').promisify;
 const net = require('net');
-const io = require('socket.io');
-const request = require('request');
+const events = require('events');
 
 class Danmu {
     constructor(roomId = 3800) {
@@ -11,16 +7,18 @@ class Danmu {
         this.serverPort = 8601;
         this.roomId = roomId;
         this.socket = null;
-        this.init();
+        this.emitter = new events.EventEmitter();
     }
 
-    init() {
+    start() {
         this.socket = net.connect(
             this.serverPort,
             this.serverHost,
             () => {
                 this.login();
                 this.joinGroup();
+                this.listen();
+                this.keepalive();
             }
         );
     }
@@ -37,10 +35,33 @@ class Danmu {
 
     listen() {
         this.socket.on('data', (data) => {
+            /**
+             * chatmsg: Danmu
+             * dgb: Gift
+             * uenter: User Enter
+             * ssd: Super Danmu
+             * upgrade: User Upgrade
+             * newblackres: No Talk
+             * blab: Badge Upgrade
+             */
+            const types = {
+                chatmsg: 'chat',
+                dgb: 'gift',
+                uenter: 'enter',
+                ssd: 'superchat',
+                upgrade: 'rankup',
+                newblackres: 'ban',
+                blab: 'badgeup'
+            };
             let parsedData = this.parse(data.toString());
-            let text = this.prettyText(parsedData);
-            console.log(text);
+            if (parsedData) {
+                this.emitter.emit(types[parsedData.body.type], parsedData.body);
+            }
         });
+    }
+
+    on(event, callback) {
+        this.emitter.on(event, callback);
     }
 
     keepalive() {
@@ -83,41 +104,6 @@ class Danmu {
             body: responseObject
         };
     }
-
-    prettyText(parsedData) {
-        /**
-         * chatmsg: Danmu
-         * dgb: Gift
-         * uenter: User Enter
-         * ssd: Super Danmu
-         * upgrade: User Upgrade
-         * newblackres: No Talk
-         * blab: Badge Upgrade
-         */
-        let body = parsedData.body;
-        switch (body.type) {
-            case 'chatmsg':
-                return `[${body.bnn}-${body.bl}](${body.level})${body.nn}: ${
-                    body.txt
-                }`;
-            case 'dgb':
-                return `Gift: ${body.nn}`;
-            case 'uenter':
-                return `UserEnter: ${body.nn}`;
-            case 'ssd':
-                return `SuperDM: ${body.nn}`;
-            case 'upgrade':
-                return `UserUpgrade: ${body.nn}`;
-            case 'newblackres':
-                return `NoTalk: ${body.nn}`;
-            case 'blab':
-                return `BadgeUpgrade: ${body.nn}`;
-            default:
-                return '';
-        }
-    }
 }
 
-const danmu = new Danmu(122402);
-danmu.listen();
-danmu.keepalive();
+module.exports = Danmu;

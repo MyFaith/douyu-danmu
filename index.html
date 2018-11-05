@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Test Socket.io</title>
+    <script src="./node_modules/socket.io-client/dist/socket.io.js"></script>
+    <script>
+        const socket = io('http://localhost:8080');
+        socket.on('chat', (data) => {
+            console.log(data.txt)
+        });
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
