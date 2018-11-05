@@ -17,7 +17,11 @@ class Danmu {
     init() {
         this.socket = net.connect(
             this.serverPort,
-            this.serverHost
+            this.serverHost,
+            () => {
+                this.login();
+                this.joinGroup();
+            }
         );
     }
 
@@ -26,10 +30,24 @@ class Danmu {
         this.send(`type@=loginreq/roomid@=${this.roomId}/`);
     }
 
+    joinGroup() {
+        if (!this.socket) return;
+        this.send(`type@=joingroup/rid@=${this.roomId}/gid@=-9999/`);
+    }
+
     listen() {
         this.socket.on('data', (data) => {
-            console.log(this.parse(data.toString()));
+            let parsedData = this.parse(data.toString());
+            let text = this.prettyText(parsedData);
+            console.log(text);
         });
+    }
+
+    keepalive() {
+        if (!this.socket) return;
+        setInterval(() => {
+            this.send('type@=mrkl/');
+        }, 40 * 1000);
     }
 
     send(payload) {
@@ -65,8 +83,41 @@ class Danmu {
             body: responseObject
         };
     }
+
+    prettyText(parsedData) {
+        /**
+         * chatmsg: Danmu
+         * dgb: Gift
+         * uenter: User Enter
+         * ssd: Super Danmu
+         * upgrade: User Upgrade
+         * newblackres: No Talk
+         * blab: Badge Upgrade
+         */
+        let body = parsedData.body;
+        switch (body.type) {
+            case 'chatmsg':
+                return `[${body.bnn}-${body.bl}](${body.level})${body.nn}: ${
+                    body.txt
+                }`;
+            case 'dgb':
+                return `Gift: ${body.nn}`;
+            case 'uenter':
+                return `UserEnter: ${body.nn}`;
+            case 'ssd':
+                return `SuperDM: ${body.nn}`;
+            case 'upgrade':
+                return `UserUpgrade: ${body.nn}`;
+            case 'newblackres':
+                return `NoTalk: ${body.nn}`;
+            case 'blab':
+                return `BadgeUpgrade: ${body.nn}`;
+            default:
+                return '';
+        }
+    }
 }
 
 const danmu = new Danmu(122402);
-danmu.login();
 danmu.listen();
+danmu.keepalive();
