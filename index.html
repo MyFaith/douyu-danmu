@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Test Socket.io</title>
-    <script src="./node_modules/socket.io-client/dist/socket.io.js"></script>
-    <script>
-        const socket = io('http://localhost:8080');
-        socket.on('chat', (data) => {
-            console.log(data.txt)
-        });
-    </script>
+    <script src="https://unpkg.com/vue@2.5.17/dist/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/socket.io/2.1.1/socket.io.js"></script>
 </head>
 <body>
-    
+    <div id="app">
+        <ul>
+            <li v-for="(item, index) in messageList" v-html="item"></li>
+        </ul>
+    </div>
+<script src="./lib/index.js"></script>
 </body>
 </html>

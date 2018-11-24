@@ -10,6 +10,6 @@
   "license": "GPL-3.0",
   "dependencies": {
     "request": "^2.88.0",
-    "socket.io": "^2.1.1"
+    "socket.io": "2.1.1"
   }
 }
