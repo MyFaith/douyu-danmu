@@ -1,0 +1,46 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+.danmu-container {
+    border: 1px solid #ddd;
+    width: 100%;
+    height: 300px;
+    overflow-y: scroll;
+    padding: 0 15px 50px 15px;
+}
+.danmu-item {
+    width: 100%;
+    height: 40px;
+    white-space: nowrap;
+    line-height: 40px;
+    padding: 0 10px;
+}
+.controll-buttons {
+    width: 100%;
+    height: 80px;
+    background-color: #eceeef;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.controll-buttons .danmu input {
+    width: 100px;
+    height: 50px;
+    font-size: 22px;
+    text-align: center;
+    outline: none;
+}
+.controll-buttons a {
+    display: inline-block;
+    height: 50px;
+    min-width: 80px;
+    line-height: 50px;
+    padding: 0 10px;
+    background-color: #ff630e;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+}
