@@ -11,3 +11,6 @@
 
 - `node server.js`
 - 然后打开`index.html`
+
+## API
+- [斗鱼礼物列表](https://webconf.douyucdn.cn/resource/common/prop_gift_list/prop_gift_config.json)
