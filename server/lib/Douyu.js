@@ -3,7 +3,7 @@ const events = require('events')
 
 class Douyu {
     constructor(roomId = 3800) {
-        this.serverHost = 'openbarrage.douyutv.com'
+        this.serverHost = "danmuproxy.douyu.com";
         this.serverPort = 8601
         this.roomId = roomId
         this.socket = null
